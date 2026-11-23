@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * build-aws-arch.mjs
- * Generates a clean AWS Architecture Diagram (.drawio XML + .drawio.png)
+ * Generates a clean, AWS-official-style Architecture Diagram (.drawio XML + .drawio.png)
  * from either a Terraform directory (`--tf-dir`) or a curated JSON spec (`--spec`).
  * Uses official AWS4 icons (`mxgraph.aws4.*`) and embeds the draw.io XML into the PNG.
  */
@@ -25,318 +25,341 @@ function escapeXml(str) {
 const LAYER_CONFIG = [
   {
     id: "edge",
-    title: "Edge / API / Trigger",
-    subtitle: "CloudFront・API GW・ALB・EventBridge",
-    fillColor: "#F6F0FF",
-    strokeColor: "#8C4FFF",
+    title: "EDGE / API",
+    accentColor: "#8C4FFF",
+    fillColor: "#FAFAFC",
+    borderColor: "#D8DCE3",
   },
   {
     id: "compute",
-    title: "Compute & Orchestration",
-    subtitle: "Lambda・Step Functions・ECS・EKS・EC2",
-    fillColor: "#FFF7EE",
-    strokeColor: "#ED7100",
+    title: "COMPUTE & ORCHESTRATION",
+    accentColor: "#ED7100",
+    fillColor: "#FFFDF9",
+    borderColor: "#E6DFD5",
   },
   {
     id: "messaging",
-    title: "Messaging / Events",
-    subtitle: "SQS・SNS・Kinesis",
-    fillColor: "#FFF0F6",
-    strokeColor: "#E7157B",
+    title: "MESSAGING / EVENTS",
+    accentColor: "#E7157B",
+    fillColor: "#FFFAFC",
+    borderColor: "#E8D8E0",
   },
   {
     id: "storage",
-    title: "Data & Storage",
-    subtitle: "Aurora / RDS・DynamoDB・S3・ElastiCache",
-    fillColor: "#F0F8F2",
-    strokeColor: "#248814",
+    title: "DATA & STORAGE",
+    accentColor: "#2E7D32",
+    fillColor: "#F9FCFA",
+    borderColor: "#D5E3D8",
   },
   {
     id: "security",
-    title: "Security (Optional)",
-    subtitle: "Security Group・WAF・KMS・Secrets",
-    fillColor: "#FFF2F3",
-    strokeColor: "#DD344C",
+    title: "SECURITY (OPTIONAL)",
+    accentColor: "#DD344C",
+    fillColor: "#FFFAFA",
+    borderColor: "#E8D5D8",
   },
   {
     id: "network",
-    title: "Network (Optional)",
-    subtitle: "VPC・Subnet・NAT・VPCE",
-    fillColor: "#F2F8F0",
-    strokeColor: "#248814",
+    title: "NETWORK (OPTIONAL)",
+    accentColor: "#248814",
+    fillColor: "#F9FCF9",
+    borderColor: "#D5E3D5",
   },
   {
     id: "iam",
-    title: "IAM (Optional)",
-    subtitle: "IAM Role・Policy",
-    fillColor: "#FFF5F5",
-    strokeColor: "#DD344C",
+    title: "IAM (OPTIONAL)",
+    accentColor: "#DD344C",
+    fillColor: "#FFFAFA",
+    borderColor: "#E8D5D8",
   },
   {
     id: "observability",
-    title: "Observability (Optional)",
-    subtitle: "CloudWatch Logs・Alarms",
-    fillColor: "#FDF2F8",
-    strokeColor: "#E7157B",
+    title: "OBSERVABILITY (OPTIONAL)",
+    accentColor: "#E7157B",
+    fillColor: "#FFFAFC",
+    borderColor: "#E8D8E0",
   },
 ];
 
+const ICON_SIZE = 52;
+const BASE_ICON_STYLE =
+  "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;";
+
 const AWS_KIND_STYLES = {
+  // External actor
+  users: {
+    width: 44,
+    height: 44,
+    isIcon: true,
+    style:
+      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.users;fillColor=#232F3E;strokeColor=none;spacingTop=4;",
+  },
+
   // Edge
   cloudfront: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;fillColor=#8C4FFF;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.cloudfront;fillColor=#8C4FFF;`,
   },
   apigw: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;fillColor=#E7157B;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.api_gateway;fillColor=#E7157B;`,
   },
   alb: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;fillColor=#8C4FFF;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.application_load_balancer;fillColor=#8C4FFF;`,
   },
   cognito: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cognito;fillColor=#DD344C;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.cognito;fillColor=#DD344C;`,
   },
   eventbridge: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;fillColor=#E7157B;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.eventbridge;fillColor=#E7157B;`,
   },
 
   // Compute & Orchestration
   lambda: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;fillColor=#ED7100;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.lambda;fillColor=#ED7100;`,
   },
   sfn: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.step_functions;fillColor=#E7157B;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.step_functions;fillColor=#E7157B;`,
   },
   ecs: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;fillColor=#ED7100;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.ecs;fillColor=#ED7100;`,
   },
   eks: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eks;fillColor=#ED7100;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.eks;fillColor=#ED7100;`,
   },
   ec2: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;fillColor=#ED7100;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.ec2;fillColor=#ED7100;`,
   },
 
   // Messaging
   sqs: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs;fillColor=#E7157B;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.sqs;fillColor=#E7157B;`,
   },
   sns: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sns;fillColor=#E7157B;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.sns;fillColor=#E7157B;`,
   },
   kinesis: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.kinesis;fillColor=#8C4FFF;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.kinesis;fillColor=#8C4FFF;`,
   },
   firehose: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.kinesis_data_firehose;fillColor=#8C4FFF;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.kinesis_data_firehose;fillColor=#8C4FFF;`,
   },
 
   // Storage & Database
   aurora: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.aurora;fillColor=#3B48CC;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.aurora;fillColor=#3B48CC;`,
   },
   rds: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;fillColor=#3B48CC;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.rds;fillColor=#3B48CC;`,
   },
   dynamodb: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;fillColor=#3B48CC;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.dynamodb;fillColor=#3B48CC;`,
   },
   s3: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;fillColor=#3F8624;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.s3;fillColor=#3F8624;`,
   },
   elasticache: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elasticache;fillColor=#3B48CC;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.elasticache;fillColor=#3B48CC;`,
   },
   efs: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.efs_standard;fillColor=#3F8624;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.efs_standard;fillColor=#3F8624;`,
   },
   opensearch: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.opensearch_service_data_node;fillColor=#8C4FFF;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.opensearch_service_data_node;fillColor=#8C4FFF;`,
   },
 
   // Optional: Security / Network / IAM / Observability
   sg: {
-    width: 155,
-    height: 54,
+    width: 156,
+    height: 52,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=6 3;fillColor=#fff0f0;strokeColor=#DD344C;strokeWidth=1.8;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;dashed=1;dashPattern=5 3;fillColor=#FFF8F8;strokeColor=#DD344C;strokeWidth=1.4;",
   },
   waf: {
-    width: 60,
-    height: 60,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     isIcon: true,
-    style:
-      "outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.waf;fillColor=#DD344C;strokeColor=#ffffff;",
+    style: `${BASE_ICON_STYLE}resIcon=mxgraph.aws4.waf;fillColor=#DD344C;`,
   },
   kms: {
-    width: 155,
-    height: 54,
+    width: 156,
+    height: 50,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#fff0f0;strokeColor=#DD344C;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFF8F8;strokeColor=#DD344C;strokeWidth=1.2;",
   },
   secrets: {
-    width: 155,
-    height: 54,
+    width: 156,
+    height: 50,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#fff0f0;strokeColor=#DD344C;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFF8F8;strokeColor=#DD344C;strokeWidth=1.2;",
   },
   vpc: {
-    width: 155,
-    height: 54,
+    width: 156,
+    height: 50,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#E9F3E6;strokeColor=#248814;strokeWidth=1.8;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F4FAF3;strokeColor=#248814;strokeWidth=1.4;",
   },
   subnet: {
-    width: 155,
-    height: 50,
+    width: 156,
+    height: 48,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#f2f8ff;strokeColor=#007DBC;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;dashed=1;fillColor=#F3F8FD;strokeColor=#0073BB;strokeWidth=1.2;",
   },
   nat: {
-    width: 155,
-    height: 50,
+    width: 156,
+    height: 48,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#f6f0ff;strokeColor=#8C4FFF;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8F5FF;strokeColor=#8C4FFF;strokeWidth=1.2;",
   },
   igw: {
-    width: 155,
-    height: 50,
+    width: 156,
+    height: 48,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#f6f0ff;strokeColor=#8C4FFF;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8F5FF;strokeColor=#8C4FFF;strokeWidth=1.2;",
   },
   vpce: {
-    width: 155,
-    height: 50,
+    width: 156,
+    height: 48,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#f6f0ff;strokeColor=#8C4FFF;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F8F5FF;strokeColor=#8C4FFF;strokeWidth=1.2;",
   },
   iam: {
-    width: 155,
-    height: 50,
+    width: 156,
+    height: 48,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#fff5f5;strokeColor=#DD344C;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFF8F8;strokeColor=#DD344C;strokeWidth=1.2;",
   },
   cloudwatch: {
-    width: 155,
-    height: 50,
+    width: 156,
+    height: 48,
     isIcon: false,
     style:
-      "rounded=1;whiteSpace=wrap;html=1;fillColor=#fdf2f8;strokeColor=#E7157B;",
+      "rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFF5FA;strokeColor=#E7157B;strokeWidth=1.2;",
   },
 };
 
+const EDGE_BASE =
+  "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;";
+
 const EDGE_STYLES = {
-  flow: "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=2;strokeColor=#232F3E;",
-  data: "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#3B48CC;",
-  async:
-    "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;dashPattern=6 4;html=1;endArrow=classic;strokeWidth=2;strokeColor=#E7157B;",
-  security:
-    "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;html=1;endArrow=open;strokeWidth=1.4;strokeColor=#DD344C;",
-  network:
-    "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;html=1;endArrow=open;strokeWidth=1.4;strokeColor=#248814;",
+  flow: `${EDGE_BASE}endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#232F3E;`,
+  data: `${EDGE_BASE}endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#0073BB;`,
+  async: `${EDGE_BASE}dashed=1;dashPattern=5 3;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#D91B7A;`,
+  security: `${EDGE_BASE}dashed=1;dashPattern=3 3;endArrow=open;strokeWidth=1.3;strokeColor=#DD344C;fontColor=#B42318;`,
+  network: `${EDGE_BASE}dashed=1;dashPattern=3 3;endArrow=open;strokeWidth=1.3;strokeColor=#248814;fontColor=#1D6B10;`,
 };
 
+const EXTERNAL_ENTRY_KINDS = new Set(["cloudfront", "apigw", "alb", "cognito"]);
+
+/**
+ * Formats a concise, AWS-official-style 2-line label:
+ * Line 1: Bold resource name (#232F3E)
+ * Line 2: Service name + concise detail (#545B64)
+ */
 function formatResourceLabel(node) {
-  const lines = [`<b>${escapeXml(node.label || node.tfName || node.id)}</b>`];
-  if (node.serviceLabel && !String(node.label || "").toLowerCase().includes(node.serviceLabel.toLowerCase())) {
-    lines.push(`<font color="#555555" style="font-size:10px">${escapeXml(node.serviceLabel)}</font>`);
+  const name = String(node.label || node.tfName || node.id);
+  const lines = [`<b style="font-size:11px;color:#232F3E">${escapeXml(name)}</b>`];
+
+  const svc = node.serviceLabel ? String(node.serviceLabel) : "";
+  let detail = node.subtitle ? String(node.subtitle) : "";
+  // Strip redundant resource name prefix from subtitle (e.g. "order-api-handler / nodejs22.x" -> "nodejs22.x")
+  if (detail && detail.toLowerCase().startsWith(name.toLowerCase())) {
+    detail = detail.slice(name.length).replace(/^\s*[/·-]\s*/, "").trim();
   }
-  if (node.subtitle) {
-    lines.push(`<font color="#666666" style="font-size:10px">${escapeXml(node.subtitle)}</font>`);
+
+  const metaParts = [];
+  if (svc && !name.toLowerCase().includes(svc.toLowerCase())) {
+    metaParts.push(svc);
+  }
+  if (detail && detail.toLowerCase() !== name.toLowerCase()) {
+    metaParts.push(detail);
+  }
+
+  if (metaParts.length > 0) {
+    lines.push(
+      `<font color="#545B64" style="font-size:9.5px">${escapeXml(metaParts.join(" · "))}</font>`
+    );
   }
   return lines.join("<br>");
+}
+
+/**
+ * Computes evenly spaced port positions (0..1) for `count` edges on one side of a node.
+ */
+function distributePort(index, count, min = 0.28, max = 0.72) {
+  if (count <= 1) return 0.5;
+  const ratio = index / (count - 1);
+  return Number((min + ratio * (max - min)).toFixed(3));
 }
 
 /**
@@ -362,52 +385,66 @@ export function generateAwsArchDrawioXml(spec) {
   if (extraNodes.length > 0) {
     activeLayers.push({
       id: "other",
-      title: "Other AWS Resources",
-      subtitle: "",
-      fillColor: "#f5f5f5",
-      strokeColor: "#666666",
+      title: "OTHER RESOURCES",
+      accentColor: "#545B64",
+      fillColor: "#F9FAFB",
+      borderColor: "#D8DCE3",
       nodes: extraNodes,
     });
   }
 
-  const outerPadX = 35;
-  const outerPadY = 25;
-  const titleBannerH = 56;
-  const awsCloudTopY = outerPadY + titleBannerH + 16;
-  const awsCloudPadX = 28;
-  const awsCloudHeaderH = 44;
-  const awsCloudPadBottom = 26;
-  const layerGapX = 48;
-  const layerWidth = 235;
-  const layerHeaderH = 48;
-  const nodeVerticalPitch = 138;
+  // Detect whether to place an external "Users / Client" icon outside AWS Cloud
+  const entryNodes = nodes.filter(
+    (n) => n.layer === "edge" && EXTERNAL_ENTRY_KINDS.has(n.kind)
+  );
+  const showExternalUsers = spec.showExternalUsers !== false && entryNodes.length > 0;
 
-  // Determine uniform height for all layer columns inside AWS Cloud
+  // Layout geometry constants (generous whitespace & crisp proportions)
+  const outerPadX = 32;
+  const outerPadY = 22;
+  const headerH = 54;
+  const externalAreaW = showExternalUsers ? 116 : 0;
+  const awsCloudX = outerPadX + externalAreaW;
+  const awsCloudTopY = outerPadY + headerH + 18;
+  const awsCloudPadX = 28;
+  const awsCloudHeaderH = 46;
+  const awsCloudPadBottom = 26;
+  const layerGapX = 72;
+  const layerWidth = 220;
+  const layerHeaderH = 34;
+  const nodeVerticalPitch = 148;
+
+  // Uniform height for all tier zones inside AWS Cloud
   let maxLayerNodes = 1;
   for (const l of activeLayers) {
     if (l.nodes.length > maxLayerNodes) maxLayerNodes = l.nodes.length;
   }
-  const layerHeight = Math.max(210, layerHeaderH + 26 + maxLayerNodes * nodeVerticalPitch);
+  const layerHeight = Math.max(220, layerHeaderH + 34 + maxLayerNodes * nodeVerticalPitch);
   const awsCloudWidth =
     awsCloudPadX * 2 +
     activeLayers.length * layerWidth +
     Math.max(0, activeLayers.length - 1) * layerGapX;
   const awsCloudHeight = awsCloudHeaderH + layerHeight + awsCloudPadBottom;
+  const totalCanvasWidth = externalAreaW + awsCloudWidth;
 
   const nodeLayoutMap = new Map();
 
-  // Compute coordinates
+  // Compute layer & node coordinates
   activeLayers.forEach((layer, lIdx) => {
     layer.relX = awsCloudPadX + lIdx * (layerWidth + layerGapX);
     layer.relY = awsCloudHeaderH;
-    layer.absX = outerPadX + layer.relX;
+    layer.absX = awsCloudX + layer.relX;
     layer.absY = awsCloudTopY + layer.relY;
     layer.index = lIdx;
 
-    const availH = layerHeight - layerHeaderH - 20;
-    const pitch = Math.min(nodeVerticalPitch, Math.floor(availH / Math.max(1, layer.nodes.length)));
+    const availH = layerHeight - layerHeaderH - 24;
+    const pitch = Math.min(
+      nodeVerticalPitch,
+      Math.floor(availH / Math.max(1, layer.nodes.length))
+    );
     const totalUsedH = layer.nodes.length * pitch;
-    const startY = layerHeaderH + 16 + Math.max(0, Math.floor((availH - totalUsedH) / 2));
+    const startY =
+      layerHeaderH + 22 + Math.max(0, Math.floor((availH - totalUsedH) / 2));
 
     layer.nodes.forEach((n, nIdx) => {
       const preset = AWS_KIND_STYLES[n.kind] || AWS_KIND_STYLES.lambda;
@@ -433,7 +470,7 @@ export function generateAwsArchDrawioXml(spec) {
     });
   });
 
-  // Footer summary of omitted categories (e.g. Security Groups / IAM) so the reader knows what was filtered
+  // Footer summary of omitted categories
   const omittedEntries = Object.entries(spec.omittedSummary || {});
   const omittedCount = omittedEntries.reduce((sum, [, c]) => sum + c, 0);
   const footerText =
@@ -441,56 +478,157 @@ export function generateAwsArchDrawioXml(spec) {
       ? `省略された補助リソース (${omittedCount}件): ${omittedEntries
           .slice(0, 8)
           .map(([t, c]) => `${t}×${c}`)
-          .join(", ")}${omittedEntries.length > 8 ? " ..." : ""}  (必要時は --include security,network,iam で表示)`
+          .join(", ")}${omittedEntries.length > 8 ? " ..." : ""}  — 必要時は --include security,network,iam で表示`
       : null;
 
+  // Determine which edge types are present for the Legend
+  const activeEdgeTypes = new Set(edges.map((e) => e.type || "flow"));
+  if (showExternalUsers) activeEdgeTypes.add("flow");
+
   const xmlLines = [];
-  xmlLines.push(`<mxfile host="drawio-aws-arch-skill" version="1.0.0">`);
+  xmlLines.push(`<mxfile host="drawio-aws-arch-skill" version="1.1.0">`);
   xmlLines.push(`  <diagram id="aws-arch-1" name="${escapeXml(title)}">`);
   xmlLines.push(
-    `    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" shadow="0">`
+    `    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" background="#FFFFFF" shadow="0">`
   );
   xmlLines.push(`      <root>`);
   xmlLines.push(`        <mxCell id="0" />`);
   xmlLines.push(`        <mxCell id="1" parent="0" />`);
 
-  // 1. Title Banner
-  const titleHtml = `<b style="font-size:17px">${escapeXml(title)}</b><br><font color="#555555">${escapeXml(subtitle)}</font>`;
+  // 1. Clean AWS-Branded Header Bar (AWS Orange accent strip + left-aligned title + right Legend)
   xmlLines.push(
-    `        <mxCell id="title_banner" value="${escapeXml(titleHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;arcSize=14;" vertex="1" parent="1">`
+    `        <mxCell id="header_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=none;" vertex="1" parent="1">`
   );
   xmlLines.push(
-    `          <mxGeometry x="${outerPadX}" y="${outerPadY}" width="${awsCloudWidth}" height="${titleBannerH}" as="geometry" />`
-  );
-  xmlLines.push(`        </mxCell>`);
-
-  // 2. Outer AWS Cloud Container
-  xmlLines.push(
-    `        <mxCell id="aws_cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=14;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=#FAFAFA;verticalAlign=top;align=left;spacingLeft=34;strokeWidth=2;" vertex="1" parent="1">`
-  );
-  xmlLines.push(
-    `          <mxGeometry x="${outerPadX}" y="${awsCloudTopY}" width="${awsCloudWidth}" height="${awsCloudHeight}" as="geometry" />`
+    `          <mxGeometry x="${outerPadX}" y="${outerPadY + 6}" width="5" height="${headerH - 12}" as="geometry" />`
   );
   xmlLines.push(`        </mxCell>`);
 
-  // 3. Layer Swimlane Boxes inside AWS Cloud
+  const titleHtml = `<b style="font-size:18px;color:#232F3E">${escapeXml(title)}</b><br><font color="#545B64" style="font-size:11px">${escapeXml(subtitle)}</font>`;
+  xmlLines.push(
+    `        <mxCell id="title_text" value="${escapeXml(titleHtml)}" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;spacingLeft=4;" vertex="1" parent="1">`
+  );
+  xmlLines.push(
+    `          <mxGeometry x="${outerPadX + 12}" y="${outerPadY}" width="${Math.max(420, totalCanvasWidth - 380)}" height="${headerH}" as="geometry" />`
+  );
+  xmlLines.push(`        </mxCell>`);
+
+  // Compact Legend on the top-right
+  const legendItems = [];
+  if (activeEdgeTypes.has("flow")) {
+    legendItems.push({ label: "Sync / Invoke", color: "#232F3E", dashed: false });
+  }
+  if (activeEdgeTypes.has("async")) {
+    legendItems.push({ label: "Async / Event", color: "#D91B7A", dashed: true });
+  }
+  if (activeEdgeTypes.has("data")) {
+    legendItems.push({ label: "Data / Storage", color: "#0073BB", dashed: false });
+  }
+  if (activeEdgeTypes.has("security")) {
+    legendItems.push({ label: "Security", color: "#DD344C", dashed: true });
+  }
+  if (legendItems.length > 0) {
+    const itemW = 108;
+    const legendW = legendItems.length * itemW + 18;
+    const legendH = 30;
+    const legendX = outerPadX + totalCanvasWidth - legendW;
+    const legendY = outerPadY + Math.round((headerH - legendH) / 2);
+
+    xmlLines.push(
+      `        <mxCell id="legend_box" value="" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#E2E6EC;strokeWidth=1;" vertex="1" parent="1">`
+    );
+    xmlLines.push(
+      `          <mxGeometry x="${legendX}" y="${legendY}" width="${legendW}" height="${legendH}" as="geometry" />`
+    );
+    xmlLines.push(`        </mxCell>`);
+
+    legendItems.forEach((item, idx) => {
+      const ix = legendX + 10 + idx * itemW;
+      const iy = legendY + Math.round(legendH / 2);
+      const lineStyle = `endArrow=block;endFill=1;endSize=4;html=1;strokeWidth=1.6;strokeColor=${item.color};${item.dashed ? "dashed=1;dashPattern=4 2;" : ""}`;
+      xmlLines.push(
+        `        <mxCell id="legend_line_${idx}" value="" style="${lineStyle}" edge="1" parent="1">`
+      );
+      xmlLines.push(`          <mxGeometry relative="1" as="geometry">`);
+      xmlLines.push(`            <mxPoint x="${ix}" y="${iy}" as="sourcePoint" />`);
+      xmlLines.push(`            <mxPoint x="${ix + 24}" y="${iy}" as="targetPoint" />`);
+      xmlLines.push(`          </mxGeometry>`);
+      xmlLines.push(`        </mxCell>`);
+
+      xmlLines.push(
+        `        <mxCell id="legend_lbl_${idx}" value="${escapeXml(item.label)}" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#3B424C;" vertex="1" parent="1">`
+      );
+      xmlLines.push(
+        `          <mxGeometry x="${ix + 26}" y="${legendY + 4}" width="${itemW - 28}" height="${legendH - 8}" as="geometry" />`
+      );
+      xmlLines.push(`        </mxCell>`);
+    });
+  }
+
+  // Subtle divider line below header
+  xmlLines.push(
+    `        <mxCell id="header_divider" value="" style="endArrow=none;html=1;strokeWidth=1;strokeColor=#E5E8EC;" edge="1" parent="1">`
+  );
+  xmlLines.push(`          <mxGeometry relative="1" as="geometry">`);
+  xmlLines.push(
+    `            <mxPoint x="${outerPadX}" y="${outerPadY + headerH + 6}" as="sourcePoint" />`
+  );
+  xmlLines.push(
+    `            <mxPoint x="${outerPadX + totalCanvasWidth}" y="${outerPadY + headerH + 6}" as="targetPoint" />`
+  );
+  xmlLines.push(`          </mxGeometry>`);
+  xmlLines.push(`        </mxCell>`);
+
+  // 2. External Users / Client icon outside AWS Cloud
+  let externalUsersId = null;
+  if (showExternalUsers) {
+    externalUsersId = "external_users";
+    const firstEntry = nodeLayoutMap.get(entryNodes[0].id);
+    const uPreset = AWS_KIND_STYLES.users;
+    const ux = outerPadX + Math.round((externalAreaW - 26 - uPreset.width) / 2);
+    const uy = Math.round(firstEntry.centerY - uPreset.height / 2);
+    const uLabel = `<b style="font-size:11px;color:#232F3E">Users / Client</b><br><font color="#545B64" style="font-size:9.5px">HTTPS</font>`;
+
+    xmlLines.push(
+      `        <mxCell id="${externalUsersId}" value="${escapeXml(uLabel)}" style="${escapeXml(uPreset.style)}" vertex="1" parent="1">`
+    );
+    xmlLines.push(
+      `          <mxGeometry x="${ux}" y="${uy}" width="${uPreset.width}" height="${uPreset.height}" as="geometry" />`
+    );
+    xmlLines.push(`        </mxCell>`);
+  }
+
+  // 3. Outer AWS Cloud Container (Official AWS Cloud Group)
+  xmlLines.push(
+    `        <mxCell id="aws_cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#232F3E;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=#FFFFFF;verticalAlign=top;align=left;spacingLeft=34;spacingTop=4;strokeWidth=1.6;" vertex="1" parent="1">`
+  );
+  xmlLines.push(
+    `          <mxGeometry x="${awsCloudX}" y="${awsCloudTopY}" width="${awsCloudWidth}" height="${awsCloudHeight}" as="geometry" />`
+  );
+  xmlLines.push(`        </mxCell>`);
+
+  // 4. Subtle Logical Tier Zones inside AWS Cloud (flat, clean, AWS Architecture Center style)
   for (const layer of activeLayers) {
     const layerId = `layer_${layer.id}`;
-    const hdrHtml = `<b style="font-size:12px">${escapeXml(layer.title)}</b>${
-      layer.subtitle
-        ? `<br><font color="#555555" style="font-size:10px">${escapeXml(layer.subtitle)}</font>`
-        : ""
-    }`;
-    const layerStyle = `swimlane;horizontal=1;startSize=${layerHeaderH};rounded=1;fillColor=${layer.fillColor};strokeColor=${layer.strokeColor};swimlaneFillColor=#ffffff;strokeWidth=1.5;html=1;whiteSpace=wrap;shadow=1;`;
+    const zoneStyle = `rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=${layer.fillColor};strokeColor=${layer.borderColor};strokeWidth=1;dashed=1;dashPattern=4 3;verticalAlign=top;align=left;spacingTop=9;spacingLeft=14;fontSize=10;fontStyle=1;fontColor=#545B64;`;
     xmlLines.push(
-      `        <mxCell id="${layerId}" value="${escapeXml(hdrHtml)}" style="${layerStyle}" vertex="1" parent="aws_cloud">`
+      `        <mxCell id="${layerId}" value="${escapeXml(layer.title)}" style="${zoneStyle}" vertex="1" parent="aws_cloud">`
     );
     xmlLines.push(
       `          <mxGeometry x="${layer.relX}" y="${layer.relY}" width="${layerWidth}" height="${layerHeight}" as="geometry" />`
     );
     xmlLines.push(`        </mxCell>`);
 
-    // Nodes inside this layer
+    // Subtle colored top accent bar on each tier zone
+    xmlLines.push(
+      `        <mxCell id="${layerId}_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=${layer.accentColor};strokeColor=none;" vertex="1" parent="${layerId}">`
+    );
+    xmlLines.push(
+      `          <mxGeometry x="12" y="0" width="36" height="3" as="geometry" />`
+    );
+    xmlLines.push(`        </mxCell>`);
+
+    // Nodes inside this tier
     for (const n of layer.nodes) {
       const layout = nodeLayoutMap.get(n.id);
       const labelHtml = formatResourceLabel(n);
@@ -505,63 +643,215 @@ export function generateAwsArchDrawioXml(spec) {
     }
   }
 
-  // 4. Edges between AWS Resources
+  // 5. External Users -> Edge Entry Arrows
+  if (externalUsersId) {
+    entryNodes.forEach((en, idx) => {
+      xmlLines.push(
+        `        <mxCell id="edge_external_${idx + 1}" value="" style="${escapeXml(EDGE_STYLES.flow + "exitX=1;exitY=0.5;entryX=0;entryY=0.5;")}" edge="1" parent="1" source="${externalUsersId}" target="${escapeXml(en.id)}">`
+      );
+      xmlLines.push(`          <mxGeometry relative="1" as="geometry" />`);
+      xmlLines.push(`        </mxCell>`);
+    });
+  }
+
+  // 6. Smart Non-Overlapping Orthogonal Edges between AWS Resources
+  // First pass: count outgoing/incoming horizontal edges per node side for port staggering
+  const rightOutGroups = new Map();
+  const leftInGroups = new Map();
+  const leftOutGroups = new Map();
+  const rightInGroups = new Map();
+
+  const resolvedEdges = [];
   for (let i = 0; i < edges.length; i++) {
     const e = edges[i];
     const src = nodeLayoutMap.get(e.from || e.source);
     const trg = nodeLayoutMap.get(e.to || e.target);
     if (!src || !trg) continue;
+    const dLayer = trg.layer.index - src.layer.index;
+    const item = { index: i, e, src, trg, dLayer };
+    resolvedEdges.push(item);
 
+    if (dLayer > 0) {
+      if (!rightOutGroups.has(src.node.id)) rightOutGroups.set(src.node.id, []);
+      rightOutGroups.get(src.node.id).push(item);
+      if (!leftInGroups.has(trg.node.id)) leftInGroups.set(trg.node.id, []);
+      leftInGroups.get(trg.node.id).push(item);
+    } else if (dLayer < 0) {
+      if (!leftOutGroups.has(src.node.id)) leftOutGroups.set(src.node.id, []);
+      leftOutGroups.get(src.node.id).push(item);
+      if (!rightInGroups.has(trg.node.id)) rightInGroups.set(trg.node.id, []);
+      rightInGroups.get(trg.node.id).push(item);
+    }
+  }
+
+  // Sort port groups by target/source Y coordinate so lines don't unnecessarily cross
+  for (const list of rightOutGroups.values()) {
+    list.sort((a, b) => a.trg.centerY - b.trg.centerY || a.dLayer - b.dLayer);
+  }
+  for (const list of leftInGroups.values()) {
+    list.sort((a, b) => a.src.centerY - b.src.centerY || a.dLayer - b.dLayer);
+  }
+  for (const list of leftOutGroups.values()) {
+    list.sort((a, b) => a.trg.centerY - b.trg.centerY);
+  }
+  for (const list of rightInGroups.values()) {
+    list.sort((a, b) => a.src.centerY - b.src.centerY);
+  }
+
+  // Track vertical gutter lanes so parallel vertical segments never overlap
+  const gutterLaneCounts = new Map();
+  function allocateGutterX(leftLayerIdx) {
+    const used = gutterLaneCounts.get(leftLayerIdx) || 0;
+    gutterLaneCounts.set(leftLayerIdx, used + 1);
+    const baseGapLeft = activeLayers[leftLayerIdx].absX + layerWidth;
+    // Spread tracks across the 72px gutter cleanly (center-outward)
+    const offsets = [0.5, 0.34, 0.66, 0.22, 0.78, 0.14, 0.86];
+    const frac = offsets[used % offsets.length];
+    return Math.round(baseGapLeft + layerGapX * frac);
+  }
+
+  // Track horizontal corridor segments { y, fromIdx, toIdx } so no two multi-layer edges share the same horizontal Y
+  const usedHorizontalCorridors = [];
+  function reserveClearHorizontalY(preferredY, fromIdx, toIdx) {
+    let candidateY = Math.round(preferredY);
+    const overlapsExisting = (y) =>
+      usedHorizontalCorridors.some(
+        (c) =>
+          Math.abs(c.y - y) < 16 &&
+          Math.max(c.fromIdx, fromIdx) < Math.min(c.toIdx, toIdx)
+      );
+
+    if (overlapsExisting(candidateY) || isHorizontalCorridorBlocked(candidateY, fromIdx, toIdx)) {
+      for (let step = 1; step <= 12; step++) {
+        for (const dir of [-1, 1]) {
+          const tryY = candidateY + dir * step * 18;
+          if (
+            tryY > awsCloudTopY + awsCloudHeaderH + layerHeaderH + 8 &&
+            !overlapsExisting(tryY) &&
+            !isHorizontalCorridorBlocked(tryY, fromIdx, toIdx)
+          ) {
+            candidateY = tryY;
+            usedHorizontalCorridors.push({ y: candidateY, fromIdx, toIdx });
+            return candidateY;
+          }
+        }
+      }
+    }
+    usedHorizontalCorridors.push({ y: candidateY, fromIdx, toIdx });
+    return candidateY;
+  }
+
+  /**
+   * Checks whether a horizontal segment at `y` between `fromLayerIdx + 1` and `toLayerIdx - 1`
+   * would intersect any node icon or its 2-line label underneath.
+   */
+  function isHorizontalCorridorBlocked(y, fromLayerIdx, toLayerIdx) {
+    for (let midIdx = fromLayerIdx + 1; midIdx < toLayerIdx; midIdx++) {
+      const midLayer = activeLayers[midIdx];
+      for (const mn of midLayer.nodes) {
+        const ml = nodeLayoutMap.get(mn.id);
+        if (!ml) continue;
+        const topBound = ml.absY - 12;
+        const botBound = ml.absY + ml.height + (ml.preset.isIcon ? 42 : 10);
+        if (y >= topBound && y <= botBound) {
+          return ml;
+        }
+      }
+    }
+    return null;
+  }
+
+  for (const item of resolvedEdges) {
+    const { index: i, e, src, trg, dLayer } = item;
     const edgeId = e.id || `edge_${i + 1}`;
     const baseStyle = e.style || EDGE_STYLES[e.type || "flow"] || EDGE_STYLES.flow;
     let portStyle = "";
     const waypoints = Array.isArray(e.waypoints) ? [...e.waypoints] : [];
 
-    const dLayer = trg.layer.index - src.layer.index;
     const dIdx = trg.nIdx - src.nIdx;
 
     if (dLayer > 0) {
-      portStyle = "exitX=1;exitY=0.5;entryX=0;entryY=0.5;";
-      if (dLayer > 1 && waypoints.length === 0) {
-        // Check if an intermediate layer has a node blocking the horizontal line at trg.centerY
-        let blocked = false;
-        for (let midIdx = src.layer.index + 1; midIdx < trg.layer.index; midIdx++) {
-          const midLayer = activeLayers[midIdx];
-          for (const mn of midLayer.nodes) {
-            const ml = nodeLayoutMap.get(mn.id);
-            if (ml && Math.abs(ml.centerY - trg.centerY) < 55) {
-              blocked = true;
-              break;
-            }
+      const outGroup = rightOutGroups.get(src.node.id);
+      const inGroup = leftInGroups.get(trg.node.id);
+      const exitY = distributePort(outGroup.indexOf(item), outGroup.length);
+      const entryY = distributePort(inGroup.indexOf(item), inGroup.length);
+      portStyle = `exitX=1;exitY=${exitY};entryX=0;entryY=${entryY};`;
+
+      const startY = Math.round(src.absY + src.height * exitY);
+      const endY = Math.round(trg.absY + trg.height * entryY);
+
+      if (waypoints.length === 0) {
+        if (dLayer === 1) {
+          // Adjacent layers: assign a unique X in the shared gutter if vertical drop is needed
+          if (Math.abs(startY - endY) > 4) {
+            const gx = allocateGutterX(src.layer.index);
+            waypoints.push({ x: gx, y: startY }, { x: gx, y: endY });
           }
-        }
-        const midX1 = Math.round(src.layer.absX + layerWidth + layerGapX * 0.45);
-        const midX2 = Math.round(trg.layer.absX - layerGapX * 0.45);
-        if (blocked) {
-          const detourY = Math.round(trg.centerY - 58);
-          waypoints.push(
-            { x: midX1, y: Math.round(src.centerY) },
-            { x: midX1, y: detourY },
-            { x: midX2, y: detourY },
-            { x: midX2, y: Math.round(trg.centerY) }
-          );
         } else {
-          waypoints.push(
-            { x: midX1, y: Math.round(src.centerY) },
-            { x: midX1, y: Math.round(trg.centerY) }
+          // Multi-layer jump: pick a collision-free horizontal corridor Y
+          const blockedAtEnd = isHorizontalCorridorBlocked(
+            endY,
+            src.layer.index,
+            trg.layer.index
           );
+          const blockedAtStart = isHorizontalCorridorBlocked(
+            startY,
+            src.layer.index,
+            trg.layer.index
+          );
+          const preferredY = !blockedAtEnd
+            ? endY
+            : !blockedAtStart
+              ? startY
+              : blockedAtEnd.absY - 24;
+          const corridorY = reserveClearHorizontalY(
+            preferredY,
+            src.layer.index,
+            trg.layer.index
+          );
+          const midX1 = allocateGutterX(src.layer.index);
+          const midX2 = allocateGutterX(trg.layer.index - 1);
+
+          if (Math.abs(corridorY - startY) <= 2 && Math.abs(corridorY - endY) <= 2) {
+            // Straight shot across layers
+          } else if (Math.abs(corridorY - endY) <= 2) {
+            waypoints.push({ x: midX1, y: startY }, { x: midX1, y: endY });
+          } else if (Math.abs(corridorY - startY) <= 2) {
+            waypoints.push({ x: midX2, y: startY }, { x: midX2, y: endY });
+          } else {
+            waypoints.push(
+              { x: midX1, y: startY },
+              { x: midX1, y: corridorY },
+              { x: midX2, y: corridorY },
+              { x: midX2, y: endY }
+            );
+          }
         }
       }
     } else if (dLayer < 0) {
-      portStyle = "exitX=0;exitY=0.5;entryX=1;entryY=0.5;";
+      const outGroup = leftOutGroups.get(src.node.id);
+      const inGroup = rightInGroups.get(trg.node.id);
+      const exitY = distributePort(outGroup.indexOf(item), outGroup.length);
+      const entryY = distributePort(inGroup.indexOf(item), inGroup.length);
+      portStyle = `exitX=0;exitY=${exitY};entryX=1;entryY=${entryY};`;
+
+      const startY = Math.round(src.absY + src.height * exitY);
+      const endY = Math.round(trg.absY + trg.height * entryY);
+
+      if (waypoints.length === 0 && Math.abs(startY - endY) > 4) {
+        const gx = allocateGutterX(src.layer.index - 1);
+        waypoints.push({ x: gx, y: startY }, { x: gx, y: endY });
+      }
     } else if (dIdx > 0) {
-      const labelDy = src.node.subtitle ? 52 : 38;
+      // Same layer, downward
+      const labelDy = 38;
       const exitBot = src.preset.isIcon
         ? `exitX=0.5;exitY=1;exitDx=0;exitDy=${labelDy};exitPerimeter=0;`
         : "exitX=0.5;exitY=1;";
       portStyle = `${exitBot}entryX=0.5;entryY=0;`;
     } else {
-      const labelDy = trg.node.subtitle ? 52 : 38;
+      // Same layer, upward
+      const labelDy = 38;
       const entryBot = trg.preset.isIcon
         ? `entryX=0.5;entryY=1;entryDx=0;entryDy=${labelDy};entryPerimeter=0;`
         : "entryX=0.5;entryY=1;";
@@ -585,14 +875,14 @@ export function generateAwsArchDrawioXml(spec) {
     xmlLines.push(`        </mxCell>`);
   }
 
-  // 5. Optional Omitted-Resources Footer Note
+  // 7. Optional Omitted-Resources Footer Note
   if (footerText) {
     const footerY = awsCloudTopY + awsCloudHeight + 12;
     xmlLines.push(
-      `        <mxCell id="omitted_footer" value="${escapeXml(footerText)}" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">`
+      `        <mxCell id="omitted_footer" value="${escapeXml(footerText)}" style="text;html=1;align=left;verticalAlign=middle;fontSize=10.5;fontColor=#687078;" vertex="1" parent="1">`
     );
     xmlLines.push(
-      `          <mxGeometry x="${outerPadX}" y="${footerY}" width="${awsCloudWidth}" height="24" as="geometry" />`
+      `          <mxGeometry x="${awsCloudX}" y="${footerY}" width="${awsCloudWidth}" height="22" as="geometry" />`
     );
     xmlLines.push(`        </mxCell>`);
   }

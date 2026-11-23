@@ -1,146 +1,239 @@
-<mxfile host="drawio-aws-arch-skill" version="1.0.0">
+<mxfile host="drawio-aws-arch-skill" version="1.1.0">
   <diagram id="aws-arch-1" name="AWS アーキテクチャ構成図 (sample-terraform)">
-    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" shadow="0">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" background="#FFFFFF" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title_banner" value="&lt;b style=&quot;font-size:17px&quot;&gt;AWS アーキテクチャ構成図 (sample-terraform)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot;&gt;Terraform (.tf) 自動解析 — 実処理・データ層抽出 (+security)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;arcSize=14;" vertex="1" parent="1">
-          <mxGeometry x="35" y="25" width="1423" height="56" as="geometry" />
+        <mxCell id="header_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="32" y="28" width="5" height="42" as="geometry" />
         </mxCell>
-        <mxCell id="aws_cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=14;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=#FAFAFA;verticalAlign=top;align=left;spacingLeft=34;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="35" y="97" width="1423" height="558" as="geometry" />
+        <mxCell id="title_text" value="&lt;b style=&quot;font-size:18px;color:#232F3E&quot;&gt;AWS アーキテクチャ構成図 (sample-terraform)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:11px&quot;&gt;Terraform (.tf) 自動解析 — 実処理・データ層抽出 (+security)&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="44" y="22" width="1180" height="54" as="geometry" />
         </mxCell>
-        <mxCell id="layer_edge" value="&lt;b style=&quot;font-size:12px&quot;&gt;Edge / API / Trigger&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;CloudFront・API GW・ALB・EventBridge&lt;/font&gt;" style="swimlane;horizontal=1;startSize=48;rounded=1;fillColor=#F6F0FF;strokeColor=#8C4FFF;swimlaneFillColor=#ffffff;strokeWidth=1.5;html=1;whiteSpace=wrap;shadow=1;" vertex="1" parent="aws_cloud">
-          <mxGeometry x="28" y="44" width="235" height="488" as="geometry" />
+        <mxCell id="legend_box" value="" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#E2E6EC;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1142" y="34" width="450" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="aws_apigatewayv2_api_orders_http_api" value="&lt;b&gt;orders-http-api&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;API Gateway (HTTP/WS)&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;orders-http-api / HTTP&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;fillColor=#E7157B;strokeColor=#ffffff;" vertex="1" parent="layer_edge">
-          <mxGeometry x="88" y="136" width="60" height="60" as="geometry" />
+        <mxCell id="legend_line_0" value="" style="endArrow=block;endFill=1;endSize=4;html=1;strokeWidth=1.6;strokeColor=#232F3E;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1152" y="49" as="sourcePoint" />
+            <mxPoint x="1176" y="49" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="aws_cloudwatch_event_rule_daily_reconcile" value="&lt;b&gt;daily-reconcile-rule&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;EventBridge Rule&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;cron(0 2 * * ? *)&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;fillColor=#E7157B;strokeColor=#ffffff;" vertex="1" parent="layer_edge">
-          <mxGeometry x="88" y="274" width="60" height="60" as="geometry" />
+        <mxCell id="legend_lbl_0" value="Sync / Invoke" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#3B424C;" vertex="1" parent="1">
+          <mxGeometry x="1178" y="38" width="80" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="layer_compute" value="&lt;b style=&quot;font-size:12px&quot;&gt;Compute &amp;amp; Orchestration&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Lambda・Step Functions・ECS・EKS・EC2&lt;/font&gt;" style="swimlane;horizontal=1;startSize=48;rounded=1;fillColor=#FFF7EE;strokeColor=#ED7100;swimlaneFillColor=#ffffff;strokeWidth=1.5;html=1;whiteSpace=wrap;shadow=1;" vertex="1" parent="aws_cloud">
-          <mxGeometry x="311" y="44" width="235" height="488" as="geometry" />
+        <mxCell id="legend_line_1" value="" style="endArrow=block;endFill=1;endSize=4;html=1;strokeWidth=1.6;strokeColor=#D91B7A;dashed=1;dashPattern=4 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1260" y="49" as="sourcePoint" />
+            <mxPoint x="1284" y="49" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="aws_lambda_function_order_api" value="&lt;b&gt;order-api-handler&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;AWS Lambda&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;order-api-handler / nodejs22.x&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;fillColor=#ED7100;strokeColor=#ffffff;" vertex="1" parent="layer_compute">
-          <mxGeometry x="88" y="67" width="60" height="60" as="geometry" />
+        <mxCell id="legend_lbl_1" value="Async / Event" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#3B424C;" vertex="1" parent="1">
+          <mxGeometry x="1286" y="38" width="80" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="aws_sfn_state_machine_order_orchestrator" value="&lt;b&gt;order-workflow-sfn&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Step Functions&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;order-workflow-sfn / STANDARD&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.step_functions;fillColor=#E7157B;strokeColor=#ffffff;" vertex="1" parent="layer_compute">
-          <mxGeometry x="88" y="205" width="60" height="60" as="geometry" />
+        <mxCell id="legend_line_2" value="" style="endArrow=block;endFill=1;endSize=4;html=1;strokeWidth=1.6;strokeColor=#0073BB;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1368" y="49" as="sourcePoint" />
+            <mxPoint x="1392" y="49" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="aws_lambda_function_payment_worker" value="&lt;b&gt;payment-worker&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;AWS Lambda&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;payment-worker / nodejs22.x&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;fillColor=#ED7100;strokeColor=#ffffff;" vertex="1" parent="layer_compute">
-          <mxGeometry x="88" y="343" width="60" height="60" as="geometry" />
+        <mxCell id="legend_lbl_2" value="Data / Storage" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#3B424C;" vertex="1" parent="1">
+          <mxGeometry x="1394" y="38" width="80" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="layer_messaging" value="&lt;b style=&quot;font-size:12px&quot;&gt;Messaging / Events&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;SQS・SNS・Kinesis&lt;/font&gt;" style="swimlane;horizontal=1;startSize=48;rounded=1;fillColor=#FFF0F6;strokeColor=#E7157B;swimlaneFillColor=#ffffff;strokeWidth=1.5;html=1;whiteSpace=wrap;shadow=1;" vertex="1" parent="aws_cloud">
-          <mxGeometry x="594" y="44" width="235" height="488" as="geometry" />
+        <mxCell id="legend_line_3" value="" style="endArrow=block;endFill=1;endSize=4;html=1;strokeWidth=1.6;strokeColor=#DD344C;dashed=1;dashPattern=4 2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1476" y="49" as="sourcePoint" />
+            <mxPoint x="1500" y="49" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="aws_sqs_queue_order_events" value="&lt;b&gt;order-events.fifo&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Amazon SQS&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;order-events.fifo / FIFO&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs;fillColor=#E7157B;strokeColor=#ffffff;" vertex="1" parent="layer_messaging">
-          <mxGeometry x="88" y="205" width="60" height="60" as="geometry" />
+        <mxCell id="legend_lbl_3" value="Security" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#3B424C;" vertex="1" parent="1">
+          <mxGeometry x="1502" y="38" width="80" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="layer_storage" value="&lt;b style=&quot;font-size:12px&quot;&gt;Data &amp;amp; Storage&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Aurora / RDS・DynamoDB・S3・ElastiCache&lt;/font&gt;" style="swimlane;horizontal=1;startSize=48;rounded=1;fillColor=#F0F8F2;strokeColor=#248814;swimlaneFillColor=#ffffff;strokeWidth=1.5;html=1;whiteSpace=wrap;shadow=1;" vertex="1" parent="aws_cloud">
-          <mxGeometry x="877" y="44" width="235" height="488" as="geometry" />
+        <mxCell id="header_divider" value="" style="endArrow=none;html=1;strokeWidth=1;strokeColor=#E5E8EC;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="32" y="82" as="sourcePoint" />
+            <mxPoint x="1592" y="82" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="aws_rds_cluster_aurora_main" value="&lt;b&gt;orders-aurora-pg&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Amazon Aurora&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;aurora-postgresql / orders_db&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.aurora;fillColor=#3B48CC;strokeColor=#ffffff;" vertex="1" parent="layer_storage">
-          <mxGeometry x="88" y="67" width="60" height="60" as="geometry" />
+        <mxCell id="external_users" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;Users / Client&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;HTTPS&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.users;fillColor=#232F3E;strokeColor=none;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="55" y="279" width="44" height="44" as="geometry" />
         </mxCell>
-        <mxCell id="aws_dynamodb_table_cart_sessions" value="&lt;b&gt;cart-sessions&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Amazon DynamoDB&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;PK: session_id&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;fillColor=#3B48CC;strokeColor=#ffffff;" vertex="1" parent="layer_storage">
-          <mxGeometry x="88" y="205" width="60" height="60" as="geometry" />
+        <mxCell id="aws_cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#232F3E;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=#FFFFFF;verticalAlign=top;align=left;spacingLeft=34;spacingTop=4;strokeWidth=1.6;" vertex="1" parent="1">
+          <mxGeometry x="148" y="94" width="1444" height="584" as="geometry" />
         </mxCell>
-        <mxCell id="aws_s3_bucket_receipts" value="&lt;b&gt;company-order-receipts&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Amazon S3&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;company-order-receipts&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;fillColor=#3F8624;strokeColor=#ffffff;" vertex="1" parent="layer_storage">
-          <mxGeometry x="88" y="343" width="60" height="60" as="geometry" />
+        <mxCell id="layer_edge" value="EDGE / API" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FAFAFC;strokeColor=#D8DCE3;strokeWidth=1;dashed=1;dashPattern=4 3;verticalAlign=top;align=left;spacingTop=9;spacingLeft=14;fontSize=10;fontStyle=1;fontColor=#545B64;" vertex="1" parent="aws_cloud">
+          <mxGeometry x="28" y="46" width="220" height="512" as="geometry" />
         </mxCell>
-        <mxCell id="layer_security" value="&lt;b style=&quot;font-size:12px&quot;&gt;Security (Optional)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Security Group・WAF・KMS・Secrets&lt;/font&gt;" style="swimlane;horizontal=1;startSize=48;rounded=1;fillColor=#FFF2F3;strokeColor=#DD344C;swimlaneFillColor=#ffffff;strokeWidth=1.5;html=1;whiteSpace=wrap;shadow=1;" vertex="1" parent="aws_cloud">
-          <mxGeometry x="1160" y="44" width="235" height="488" as="geometry" />
+        <mxCell id="layer_edge_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#8C4FFF;strokeColor=none;" vertex="1" parent="layer_edge">
+          <mxGeometry x="12" y="0" width="36" height="3" as="geometry" />
         </mxCell>
-        <mxCell id="aws_security_group_lambda_sg" value="&lt;b&gt;lambda-sg&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Security Group&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;Outbound HTTPS &amp;amp; RDS 5432&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=6 3;fillColor=#fff0f0;strokeColor=#DD344C;strokeWidth=1.8;" vertex="1" parent="layer_security">
-          <mxGeometry x="40" y="136" width="155" height="54" as="geometry" />
+        <mxCell id="aws_apigatewayv2_api_orders_http_api" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;orders-http-api&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;API Gateway (HTTP/WS) · HTTP&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.api_gateway;fillColor=#E7157B;" vertex="1" parent="layer_edge">
+          <mxGeometry x="84" y="135" width="52" height="52" as="geometry" />
         </mxCell>
-        <mxCell id="aws_security_group_rds_sg" value="&lt;b&gt;rds-sg&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#555555&quot; style=&quot;font-size:10px&quot;&gt;Security Group&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#666666&quot; style=&quot;font-size:10px&quot;&gt;Allow 5432 from lambda-sg&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=6 3;fillColor=#fff0f0;strokeColor=#DD344C;strokeWidth=1.8;" vertex="1" parent="layer_security">
-          <mxGeometry x="40" y="274" width="155" height="54" as="geometry" />
+        <mxCell id="aws_cloudwatch_event_rule_daily_reconcile" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;daily-reconcile-rule&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;EventBridge Rule · cron(0 2 * * ? *)&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.eventbridge;fillColor=#E7157B;" vertex="1" parent="layer_edge">
+          <mxGeometry x="84" y="283" width="52" height="52" as="geometry" />
         </mxCell>
-        <mxCell id="edge_1" value="attached" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;html=1;endArrow=open;strokeWidth=1.4;strokeColor=#DD344C;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_security_group_lambda_sg">
+        <mxCell id="layer_compute" value="COMPUTE &amp; ORCHESTRATION" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFDF9;strokeColor=#E6DFD5;strokeWidth=1;dashed=1;dashPattern=4 3;verticalAlign=top;align=left;spacingTop=9;spacingLeft=14;fontSize=10;fontStyle=1;fontColor=#545B64;" vertex="1" parent="aws_cloud">
+          <mxGeometry x="320" y="46" width="220" height="512" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_compute_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#ED7100;strokeColor=none;" vertex="1" parent="layer_compute">
+          <mxGeometry x="12" y="0" width="36" height="3" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_lambda_function_order_api" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;order-api-handler&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;AWS Lambda · nodejs22.x&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.lambda;fillColor=#ED7100;" vertex="1" parent="layer_compute">
+          <mxGeometry x="84" y="61" width="52" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_sfn_state_machine_order_orchestrator" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;order-workflow-sfn&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;Step Functions · STANDARD&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.step_functions;fillColor=#E7157B;" vertex="1" parent="layer_compute">
+          <mxGeometry x="84" y="209" width="52" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_lambda_function_payment_worker" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;payment-worker&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;AWS Lambda · nodejs22.x&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.lambda;fillColor=#ED7100;" vertex="1" parent="layer_compute">
+          <mxGeometry x="84" y="357" width="52" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_messaging" value="MESSAGING / EVENTS" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFAFC;strokeColor=#E8D8E0;strokeWidth=1;dashed=1;dashPattern=4 3;verticalAlign=top;align=left;spacingTop=9;spacingLeft=14;fontSize=10;fontStyle=1;fontColor=#545B64;" vertex="1" parent="aws_cloud">
+          <mxGeometry x="612" y="46" width="220" height="512" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_messaging_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#E7157B;strokeColor=none;" vertex="1" parent="layer_messaging">
+          <mxGeometry x="12" y="0" width="36" height="3" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_sqs_queue_order_events" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;order-events.fifo&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;Amazon SQS · FIFO&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.sqs;fillColor=#E7157B;" vertex="1" parent="layer_messaging">
+          <mxGeometry x="84" y="209" width="52" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_storage" value="DATA &amp; STORAGE" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F9FCFA;strokeColor=#D5E3D8;strokeWidth=1;dashed=1;dashPattern=4 3;verticalAlign=top;align=left;spacingTop=9;spacingLeft=14;fontSize=10;fontStyle=1;fontColor=#545B64;" vertex="1" parent="aws_cloud">
+          <mxGeometry x="904" y="46" width="220" height="512" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_storage_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=none;" vertex="1" parent="layer_storage">
+          <mxGeometry x="12" y="0" width="36" height="3" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_rds_cluster_aurora_main" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;orders-aurora-pg&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;Amazon Aurora · aurora-postgresql / orders_db&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.aurora;fillColor=#3B48CC;" vertex="1" parent="layer_storage">
+          <mxGeometry x="84" y="61" width="52" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_dynamodb_table_cart_sessions" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;cart-sessions&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;Amazon DynamoDB · PK: session_id&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.dynamodb;fillColor=#3B48CC;" vertex="1" parent="layer_storage">
+          <mxGeometry x="84" y="209" width="52" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_s3_bucket_receipts" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;company-order-receipts&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;Amazon S3&lt;/font&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;strokeColor=#ffffff;labelBackgroundColor=none;spacingTop=4;resIcon=mxgraph.aws4.s3;fillColor=#3F8624;" vertex="1" parent="layer_storage">
+          <mxGeometry x="84" y="357" width="52" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_security" value="SECURITY (OPTIONAL)" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#FFFAFA;strokeColor=#E8D5D8;strokeWidth=1;dashed=1;dashPattern=4 3;verticalAlign=top;align=left;spacingTop=9;spacingLeft=14;fontSize=10;fontStyle=1;fontColor=#545B64;" vertex="1" parent="aws_cloud">
+          <mxGeometry x="1196" y="46" width="220" height="512" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_security_accent" value="" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#DD344C;strokeColor=none;" vertex="1" parent="layer_security">
+          <mxGeometry x="12" y="0" width="36" height="3" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_security_group_lambda_sg" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;lambda-sg&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;Security Group · Outbound HTTPS &amp;amp; RDS 5432&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;dashed=1;dashPattern=5 3;fillColor=#FFF8F8;strokeColor=#DD344C;strokeWidth=1.4;" vertex="1" parent="layer_security">
+          <mxGeometry x="32" y="135" width="156" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="aws_security_group_rds_sg" value="&lt;b style=&quot;font-size:11px;color:#232F3E&quot;&gt;rds-sg&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#545B64&quot; style=&quot;font-size:9.5px&quot;&gt;Security Group · Allow 5432 from lambda-sg&lt;/font&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;dashed=1;dashPattern=5 3;fillColor=#FFF8F8;strokeColor=#DD344C;strokeWidth=1.4;" vertex="1" parent="layer_security">
+          <mxGeometry x="32" y="283" width="156" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_external_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#232F3E;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="external_users" target="aws_apigatewayv2_api_orders_http_api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" value="attached" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;dashed=1;dashPattern=3 3;endArrow=open;strokeWidth=1.3;strokeColor=#DD344C;fontColor=#B42318;exitX=1;exitY=0.427;entryX=0;entryY=0.28;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_security_group_lambda_sg">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="603" y="238" />
-              <mxPoint x="603" y="304" />
+              <mxPoint x="724" y="223" />
+              <mxPoint x="724" y="177" />
+              <mxPoint x="1308" y="177" />
+              <mxPoint x="1308" y="290" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_2" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#3B48CC;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_rds_cluster_aurora_main">
+        <mxCell id="edge_2" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#0073BB;exitX=1;exitY=0.28;entryX=0;entryY=0.28;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_rds_cluster_aurora_main">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" value="Query/Put" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#0073BB;exitX=1;exitY=0.72;entryX=0;entryY=0.28;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_dynamodb_table_cart_sessions">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="603" y="238" />
-              <mxPoint x="603" y="238" />
+              <mxPoint x="1004" y="238" />
+              <mxPoint x="1004" y="364" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_3" value="Query/Put" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#3B48CC;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_dynamodb_table_cart_sessions">
+        <mxCell id="edge_4" value="SendMessage" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;dashed=1;dashPattern=5 3;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#D91B7A;exitX=1;exitY=0.573;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_sqs_queue_order_events">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="603" y="238" />
-              <mxPoint x="603" y="318" />
-              <mxPoint x="890" y="318" />
-              <mxPoint x="890" y="376" />
+              <mxPoint x="704" y="231" />
+              <mxPoint x="704" y="375" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_4" value="SendMessage" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;dashPattern=6 4;html=1;endArrow=classic;strokeWidth=2;strokeColor=#E7157B;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_sqs_queue_order_events">
+        <mxCell id="edge_5" value="Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#232F3E;exitX=0.5;exitY=1;exitDx=0;exitDy=38;exitPerimeter=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_sfn_state_machine_order_orchestrator">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_5" value="Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=2;strokeColor=#232F3E;exitX=0.5;exitY=1;exitDx=0;exitDy=52;exitPerimeter=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="aws_lambda_function_order_api" target="aws_sfn_state_machine_order_orchestrator">
+        <mxCell id="edge_6" value="Task Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#232F3E;exitX=0.5;exitY=1;exitDx=0;exitDy=38;exitPerimeter=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="aws_sfn_state_machine_order_orchestrator" target="aws_lambda_function_payment_worker">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="edge_6" value="Task Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=2;strokeColor=#232F3E;exitX=0.5;exitY=1;exitDx=0;exitDy=52;exitPerimeter=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="aws_sfn_state_machine_order_orchestrator" target="aws_lambda_function_payment_worker">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="edge_7" value="Query/Put" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#3B48CC;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_sfn_state_machine_order_orchestrator" target="aws_dynamodb_table_cart_sessions">
+        <mxCell id="edge_7" value="Query/Put" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#0073BB;exitX=1;exitY=0.5;entryX=0;entryY=0.72;" edge="1" parent="1" source="aws_sfn_state_machine_order_orchestrator" target="aws_dynamodb_table_cart_sessions">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="603" y="376" />
-              <mxPoint x="603" y="318" />
-              <mxPoint x="890" y="318" />
-              <mxPoint x="890" y="376" />
+              <mxPoint x="744" y="375" />
+              <mxPoint x="744" y="325" />
+              <mxPoint x="1028" y="325" />
+              <mxPoint x="1028" y="386" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_8" value="attached" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;html=1;endArrow=open;strokeWidth=1.4;strokeColor=#DD344C;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_payment_worker" target="aws_security_group_lambda_sg">
+        <mxCell id="edge_8" value="attached" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;dashed=1;dashPattern=3 3;endArrow=open;strokeWidth=1.3;strokeColor=#DD344C;fontColor=#B42318;exitX=1;exitY=0.5;entryX=0;entryY=0.72;" edge="1" parent="1" source="aws_lambda_function_payment_worker" target="aws_security_group_lambda_sg">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="603" y="514" />
-              <mxPoint x="603" y="304" />
+              <mxPoint x="698" y="523" />
+              <mxPoint x="698" y="456" />
+              <mxPoint x="1296" y="456" />
+              <mxPoint x="1296" y="312" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_9" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#3B48CC;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_payment_worker" target="aws_rds_cluster_aurora_main">
+        <mxCell id="edge_9" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#0073BB;exitX=1;exitY=0.28;entryX=0;entryY=0.72;" edge="1" parent="1" source="aws_lambda_function_payment_worker" target="aws_rds_cluster_aurora_main">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="603" y="514" />
-              <mxPoint x="603" y="238" />
+              <mxPoint x="750" y="512" />
+              <mxPoint x="750" y="256" />
+              <mxPoint x="996" y="256" />
+              <mxPoint x="996" y="238" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_10" value="S3 R/W" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#3B48CC;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_payment_worker" target="aws_s3_bucket_receipts">
+        <mxCell id="edge_10" value="S3 R/W" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#0073BB;exitX=1;exitY=0.72;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_lambda_function_payment_worker" target="aws_s3_bucket_receipts">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="603" y="514" />
-              <mxPoint x="603" y="514" />
+              <mxPoint x="724" y="534" />
+              <mxPoint x="724" y="523" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_11" value="attached" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;html=1;endArrow=open;strokeWidth=1.4;strokeColor=#DD344C;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_rds_cluster_aurora_main" target="aws_security_group_rds_sg">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_11" value="attached" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;dashed=1;dashPattern=3 3;endArrow=open;strokeWidth=1.3;strokeColor=#DD344C;fontColor=#B42318;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_rds_cluster_aurora_main" target="aws_security_group_rds_sg">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1320" y="227" />
+              <mxPoint x="1320" y="449" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="edge_12" value="Trigger / Poll" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;dashPattern=6 4;html=1;endArrow=classic;strokeWidth=2;strokeColor=#E7157B;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="aws_sqs_queue_order_events" target="aws_lambda_function_payment_worker">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_12" value="Trigger / Poll" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;dashed=1;dashPattern=5 3;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#D91B7A;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="aws_sqs_queue_order_events" target="aws_lambda_function_payment_worker">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="712" y="375" />
+              <mxPoint x="712" y="523" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="edge_13" value="Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=2;strokeColor=#232F3E;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_apigatewayv2_api_orders_http_api" target="aws_lambda_function_order_api">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_13" value="Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#232F3E;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_apigatewayv2_api_orders_http_api" target="aws_lambda_function_order_api">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="432" y="301" />
+              <mxPoint x="432" y="227" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="edge_14" value="Target" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;dashed=1;dashPattern=6 4;html=1;endArrow=classic;strokeWidth=2;strokeColor=#E7157B;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_cloudwatch_event_rule_daily_reconcile" target="aws_sfn_state_machine_order_orchestrator">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="edge_14" value="Target" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endSize=6;fontSize=10;fontColor=#232F3E;labelBackgroundColor=#FFFFFF;labelBorderColor=none;dashed=1;dashPattern=5 3;endArrow=block;endFill=1;strokeWidth=1.6;strokeColor=#D91B7A;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="aws_cloudwatch_event_rule_daily_reconcile" target="aws_sfn_state_machine_order_orchestrator">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="449" />
+              <mxPoint x="420" y="375" />
+            </Array>
+          </mxGeometry>
         </mxCell>
-        <mxCell id="omitted_footer" value="省略された補助リソース (5件): aws_vpc×1, aws_subnet×1, aws_iam_role×2, aws_cloudwatch_log_group×1  (必要時は --include security,network,iam で表示)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="35" y="667" width="1423" height="24" as="geometry" />
+        <mxCell id="omitted_footer" value="省略された補助リソース (5件): aws_vpc×1, aws_subnet×1, aws_iam_role×2, aws_cloudwatch_log_group×1  — 必要時は --include security,network,iam で表示" style="text;html=1;align=left;verticalAlign=middle;fontSize=10.5;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="148" y="690" width="1444" height="22" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
