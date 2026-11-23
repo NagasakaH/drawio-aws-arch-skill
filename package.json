@@ -1,0 +1,10 @@
+{
+  "name": "drawio-aws-arch-skill",
+  "version": "1.0.0",
+  "description": "Zero-dependency Node.js (.mjs) agent skill that scans Terraform (.tf) files and generates AWS architecture diagrams (.drawio + .drawio.png) focusing on compute/API/data layers while omitting Security Groups and IAM by default",
+  "type": "module",
+  "scripts": {
+    "demo": "node scripts/build-aws-arch.mjs --tf-dir examples/sample-terraform --output examples/output/aws-arch-default.drawio.png --json-out examples/output/aws-arch-default.json && node scripts/build-aws-arch.mjs --tf-dir examples/sample-terraform --include security --output examples/output/aws-arch-with-sg.drawio.png"
+  },
+  "license": "Apache-2.0"
+}
